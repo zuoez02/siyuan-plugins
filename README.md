@@ -1,5 +1,5 @@
 # siyuan-plugins
-Siyuan plugins based on Siyuan plugin system.
+Siyuan plugins based on [Siyuan plugin system](https://github.com/zuoez02/siyuan-plugin-system).
 
 [中文README](./README_zh.md)
 

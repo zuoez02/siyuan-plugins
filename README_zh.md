@@ -1,5 +1,5 @@
 # 思源插件集合
-基于思源插件系统的一些插件。
+基于[思源插件系统](https://github.com/zuoez02/siyuan-plugin-system)的一些插件。
 
 [README in English](./README.md)
 
