@@ -1,6 +1,7 @@
 {
     "plugins": [
         "hide-vip-func",
-        "more-background"
+        "more-background",
+        "calendar"
     ]
 }
