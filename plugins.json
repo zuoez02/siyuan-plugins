@@ -2,6 +2,7 @@
     "plugins": [
         "hide-vip-func",
         "more-background",
-        "calendar"
+        "calendar",
+        "zhi-publisher"
     ]
 }
