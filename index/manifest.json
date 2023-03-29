@@ -1,4 +1,5 @@
 {
+    "key": "index",
     "name": "目录插件",
     "description": "在当前文档块下插入链接目录",
     "author": "TinkMingKing",
