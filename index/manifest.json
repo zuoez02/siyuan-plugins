@@ -1,7 +1,7 @@
 {
     "key": "index",
     "name": "目录插件",
-    "description": "在当前文档块下插入链接目录",
+    "description": "在当前文档块下插入链接目录，快捷键ctrl+alt+i，命令面板为ic",
     "author": "TinkMingKing",
     "url": "https://github.com/TinkMingKing/siyuan-index-plugins",
     "version": "1.0.1"
