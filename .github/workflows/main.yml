@@ -16,7 +16,7 @@ jobs:
           echo 'remote add'
           git remote add bitbucket "${PUSH_REPO}"
           echo 'git pull'
-          git pull bitbucket
+          git fetch bitbucket
           echo 'git config'
           git config user.email "${PUSH_ACCESS_TOKEN}"
           echo 'git push'
