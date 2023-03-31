@@ -11,7 +11,7 @@ jobs:
         env:
           PUSH_ACCESS_TOKEN: ${{ secrets.PUSH_ACCESS_TOKEN }}
         run: |
-          git clone https://github.com/zuoez02/siyuan-plugins
+          git clone https://github.com/zuoez02/siyuan-plugins.git
           cd siyuan-plugins
           git remote add bitbucket "${PUSH_REPO}"
           git config user.email "${PUSH_ACCESS_TOKEN}"
