@@ -12,6 +12,7 @@ jobs:
           PUSH_ACCESS_TOKEN: ${{ secrets.PUSH_ACCESS_TOKEN }}
         run: |
           pwd && ls
+          git config --global --unset remote.origin.url
           echo 'clone source'
           git clone https://github.com/zuoez02/siyuan-plugins.git
           echo 'cd siyuan-plugins'
