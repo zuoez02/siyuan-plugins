@@ -1,0 +1,9 @@
+{
+  "key": "math-enhance",
+  "name": "数学块增强插件",
+  "description": "增强思源的数学编辑体验,拥有交互式输入、数学虚拟键盘、闪卡插件集成的功能",
+  "author": "zxhd863943427",
+  "url": "https://github.com/zxhd863943427/siyuan-math-enhance",
+  "version": "0.0.1",
+  "forceUpdate": true
+}
