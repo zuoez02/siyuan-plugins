@@ -13,9 +13,6 @@ jobs:
           PUSH_ACCESS_TOKEN: ${{ secrets.PUSH_ACCESS_TOKEN }}
         run: |
           pwd && ls
-          echo 'cd siyuan-plugins'
-          cd siyuan-plugins
-          pwd && ls &&
           echo 'remote add'
           git remote add bitbucket "${PUSH_REPO}"
           echo 'git pull'
