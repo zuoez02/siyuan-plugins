@@ -8,17 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: bash
-        env:
-          PUSH_ACCESS_TOKEN: ${{ secrets.PUSH_ACCESS_TOKEN }}
-        run: |
-          pwd && ls
-          echo 'remote add'
-          git remote add bitbucket "${PUSH_REPO}"
-          echo 'git pull'
-          git fetch bitbucket
-          echo 'git config'
-          git config user.email "${PUSH_ACCESS_TOKEN}"
-          echo 'git push'
-          git push bitbucket
-          echo 'finish'
+      - name: Mirror to BitBucket GitHub Action
+        uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url: git@bitbucket.org:siyuan-plugin/siyuan-plugins.git
+          ssh_private_key:                              # <-- use 'secrets' to pass credential information.
+            ${{ secrets.BITBUCKET_PRIVATE }}
+          
