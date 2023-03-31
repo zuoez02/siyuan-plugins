@@ -11,6 +11,8 @@ jobs:
         env:
           SUPER_SECRET: ${{ secrets.PUSH_ACCESS_TOKEN }}
         run: |
+          git clone https://github.com/zuoez02/siyuan-plugins
+          cd siyuan-plugins
           git remote add bitbucket "https://x-token-auth:${SUPER_SECRET}@bitbucket.org/siyuan-plugin/siyuan-plugins.git"
           git config user.name zuoez02
           git config user.email zuoez02@outlook.com
