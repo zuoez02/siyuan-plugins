@@ -3,27 +3,25 @@ name: Git sync to other repo
 on: push
 
 jobs:
-  my-job:
+  sync:
     name: Sync to bitbucket
     runs-on: ubuntu-latest
     steps:
-      - shell: bash
+      - uses: actions/checkout@v3
+      - name: bash
         env:
           PUSH_ACCESS_TOKEN: ${{ secrets.PUSH_ACCESS_TOKEN }}
         run: |
-          pwd && ls && \
-          git config --global --unset remote.origin.url && \
-          echo 'clone source' && \
-          git clone https://github.com/zuoez02/siyuan-plugins.git && \
-          echo 'cd siyuan-plugins' && \
-          cd siyuan-plugins && \
-          pwd && ls && \
-          echo 'remote add' && \
-          git remote add bitbucket "${PUSH_REPO}" && \
-          echo 'git pull' && \
-          git pull bitbucket && \
-          echo 'git config' && \
-          git config user.email "${PUSH_ACCESS_TOKEN}" && \
-          echo 'git push' && \
-          git push bitbucket && \
+          pwd && ls
+          echo 'cd siyuan-plugins'
+          cd siyuan-plugins
+          pwd && ls &&
+          echo 'remote add'
+          git remote add bitbucket "${PUSH_REPO}"
+          echo 'git pull'
+          git pull bitbucket
+          echo 'git config'
+          git config user.email "${PUSH_ACCESS_TOKEN}"
+          echo 'git push'
+          git push bitbucket
           echo 'finish'
