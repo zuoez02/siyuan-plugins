@@ -9,11 +9,10 @@ jobs:
     steps:
       - shell: bash
         env:
-          SUPER_SECRET: ${{ secrets.PUSH_ACCESS_TOKEN }}
+          PUSH_ACCESS_TOKEN: ${{ secrets.PUSH_ACCESS_TOKEN }}
         run: |
           git clone https://github.com/zuoez02/siyuan-plugins
           cd siyuan-plugins
-          git remote add bitbucket "https://x-token-auth:${SUPER_SECRET}@bitbucket.org/siyuan-plugin/siyuan-plugins.git"
-          git config user.name zuoez02
-          git config user.email zuoez02@outlook.com
+          git remote add bitbucket "${PUSH_REPO}"
+          git config user.email "${PUSH_ACCESS_TOKEN}"
           git push bitbucket
