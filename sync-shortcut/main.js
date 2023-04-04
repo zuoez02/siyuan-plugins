@@ -8,7 +8,7 @@ module.exports = class SavePlugin extends Plugin {
 
     onload() {
         this.registerCommand({
-            key: 'Save and Sync',
+            command: 'Save and Sync',
             description: 'Trigger Sync function on toolbar',
             callback: () => this.save(),
             shortcut: 'command+s,ctrl+s',
