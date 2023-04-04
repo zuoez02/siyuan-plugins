@@ -1,0 +1,8 @@
+{
+    "name": "sync-shortcut",
+    "key": "保存快捷键",
+    "description": "使用Command+S或Ctrl+S实现点击同步按钮的功能, 特别适用于手动同步用户",
+    "author": "zuoez02",
+    "url": "https://github.com/zuoez02/siyuan-plugins",
+    "version": "1.0.0"
+}
