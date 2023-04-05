@@ -1,9 +1,9 @@
 {
   "key": "flashcard-enhance",
   "name": "闪卡增强插件",
-  "description": "增强思源的闪卡体验，左键一键制卡，右键打开菜单",
+  "description": "增强思源的闪卡体验，左键一键制卡，右键打开菜单, 对2.8.0以下版本可能有兼容性问题, 谨慎升级",
   "author": "zxhd863943427",
   "url": "https://github.com/zxhd863943427/siyuan-flash-enhance",
-  "version": "0.0.6",
-  "forceUpdate": true
+  "version": "0.0.7",
+  "forceUpdate": false
 }
