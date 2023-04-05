@@ -5,7 +5,7 @@ const { Plugin } = require('siyuan');
 let interval = null;
 
 
-class HideContentPlugin extends Plugin {
+class HideVipFuncPlugin extends Plugin {
     constructor() {
         super();
     }
@@ -69,4 +69,4 @@ function checkWindowFocus() {
   }
 }
 
-module.exports = HideContentPlugin;
+module.exports = HideVipFuncPlugin;
