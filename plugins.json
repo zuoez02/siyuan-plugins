@@ -9,6 +9,8 @@
         "index",
         "math-enhance",
         "DarkPlusConcise",
-        "sync-shortcut"
+        "sync-shortcut",
+        "color-folder",
+        "hide-content-when-unfocused"
     ]
 }
