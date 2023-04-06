@@ -10,6 +10,8 @@
         "math-enhance",
         "DarkPlusConcise",
         "sync-shortcut",
-        "CardLimitExtend"
+        "CardLimitExtend",
+        "color-folder",
+        "hide-content-when-unfocused"
     ]
 }
