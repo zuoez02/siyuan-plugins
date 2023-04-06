@@ -1,7 +1,9 @@
 {
   "key": "color-folder",
   "name": "彩色文件树",
-  "description": "彩色文件树",
+  "description": "右键文件树设置颜色",
+  "url": "https://github.com/InEase/My-SiYuan-Plugins/",
   "author": "Mux",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "forceUpdate": true
 }
