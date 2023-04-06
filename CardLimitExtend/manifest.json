@@ -1,1 +1,9 @@
-{"key":"CardLimitExtend","name":"新卡日上限控制","description":"将新卡上限由单次复习控制改成日复习控制--兼容版本：2.8.3+","author":"wslrj","url":"","version":"0.0.1","forceUpdate":true}
+{
+    "key": "CardLimitExtend",
+    "name": "新卡日上限控制",
+    "description": "将新卡上限由单次复习控制改成日复习控制--兼容版本：2.8.3+",
+    "author": "wslrj",
+    "url": "",
+    "version": "0.0.1",
+    "forceUpdate": true
+}
