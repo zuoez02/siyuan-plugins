@@ -12,6 +12,7 @@
         "sync-shortcut",
         "CardLimitExtend",
         "color-folder",
-        "hide-content-when-unfocused"
+        "hide-content-when-unfocused",
+        "open-diary-today"
     ]
 }
