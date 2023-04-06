@@ -1,0 +1,9 @@
+{
+  "key": "hide-content-when-unfocused",
+  "name": "多屏协作防偷窥",
+  "description": "窗口失去焦点时隐藏笔记内容，需要通过命令面板切换",
+  "url": "https://github.com/InEase/My-SiYuan-Plugins/",
+  "author": "Mux",
+  "version": "1.0.0",
+  "forceUpdate": true
+}
