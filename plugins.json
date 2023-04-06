@@ -9,6 +9,7 @@
         "index",
         "math-enhance",
         "DarkPlusConcise",
-        "sync-shortcut"
+        "sync-shortcut",
+        "CardLimitExtend"
     ]
 }
