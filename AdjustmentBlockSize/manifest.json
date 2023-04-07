@@ -1,0 +1,9 @@
+{
+    "key": "AdjustmentBlockSize",
+    "name": "快捷更改块大小",
+    "description": "打开后在每一个块的最右边有一个托手可以用鼠标拖动控制块大小",
+    "url": "https://github.com/Chenm4/siyuan-plugins",
+    "author": "Zhaoshengmu",
+    "version": "1.0.0",
+    "forceUpdate": true
+}
