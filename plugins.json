@@ -8,6 +8,11 @@
         "zhi-code-block",
         "index",
         "math-enhance",
-        "DarkPlusConcise"
+        "DarkPlusConcise",
+        "sync-shortcut",
+        "CardLimitExtend",
+        "color-folder",
+        "hide-content-when-unfocused",
+        "open-diary-today"
     ]
 }
