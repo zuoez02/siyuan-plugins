@@ -23,12 +23,12 @@ class ColorFolderPlugin extends Plugin {
 
 module.exports = ColorFolderPlugin;
 
-function render(mutations) {
+async function render(mutations) {
   if (!mutations[0].addedNodes) {
     return
   }
 
-  let config = loadConfig()
+  let config = await loadConfig()
 
   mutations[0].addedNodes.forEach(element => {
     const nodes = element.getElementsByTagName("li")
@@ -74,12 +74,12 @@ function generateFontStyle() {
   return node;
 }
 
-function handleSetColor(event) {
-  let color = event.target.style.color;
+async function handleSetColor(event) {
+  let color = event.target.style.color || event.target.querySelector(".color__square").style.color;
   let node = document.querySelectorAll('.b3-list-item--focus')[0];
   let id = node.getAttribute("data-node-id")
   // save
-  let config = loadConfig()
+  let config = await loadConfig()
   config[id] = color
   saveConfig(config)
   // render
@@ -121,19 +121,42 @@ function addFileTreeButton() {
 
 function saveConfig(config) {
   color_config = config
-  localStorage.setItem('color-folder-config', JSON.stringify(config))
+  
+  // POST /api/storage/setLocalStorageVal
+  // payload {"app":"color-folder","key":"color-folder-config","val":config}
+  fetch('/api/storage/setLocalStorageVal', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      app: 'color-folder',
+      key: 'color-folder-config',
+      val: JSON.stringify(config)
+    })
+  })
 }
 
-function loadConfig() {
+async function loadConfig() {
   if (color_config) {
     return color_config
   }
 
-  const localConfig = localStorage.getItem('color-folder-config')
-  if (localConfig) {
-    return JSON.parse(localConfig)
-  } else {
-    saveConfig({})
-    return {}
+  // POST /api/storage/getLocalStorage
+  const res = await fetch('/api/storage/getLocalStorage', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  })
+  const data = await res.json()
+  if (data.code === 0) {
+    const localConfig = data.data['color-folder-config']
+    if (localConfig) {
+      return JSON.parse(localConfig)
+    } else {
+      saveConfig({})
+      return {}
+    }
   }
 }
