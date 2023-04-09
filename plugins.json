@@ -1,19 +1,19 @@
 {
     "plugins": [
-        "CardLimitExtend",
-        "DarkPlusConcise",
-        "calendar",
-        "color-folder",
-        "flashcard-enhance",
-        "hide-content-when-unfocused",
         "hide-vip-func",
+        "more-background",
+        "calendar",
+        "zhi-publisher",
+        "flashcard-enhance",
+        "zhi-code-block",
         "index",
         "math-enhance",
-        "more-background",
-        "mouse-wheel-zoom",
-        "open-diary-today",
+        "DarkPlusConcise",
         "sync-shortcut",
-        "zhi-code-block",
-        "zhi-publisher"
+        "CardLimitExtend",
+        "color-folder",
+        "hide-content-when-unfocused",
+        "open-diary-today",
+        "AdjustmentBlockSize"
     ]
 }
