@@ -13,6 +13,7 @@
         "CardLimitExtend",
         "color-folder",
         "hide-content-when-unfocused",
-        "open-diary-today"
+        "open-diary-today",
+        "AdjustmentBlockSize"
     ]
 }
