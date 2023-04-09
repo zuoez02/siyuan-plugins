@@ -1,5 +1,5 @@
 {
-  "key": "runYourNote",
+  "key": "RunYourNote",
   "name": "运行你的笔记",
   "description": "抽取笔记当中的css和js并在思源中运行,加载时须联网",
   "author": "原作者:leolee9086, 代为打包:zxhd863943427",
