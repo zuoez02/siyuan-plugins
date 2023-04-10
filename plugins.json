@@ -14,6 +14,7 @@
         "color-folder",
         "hide-content-when-unfocused",
         "open-diary-today",
+        "mouse-wheel-zoom",
         "AdjustmentBlockSize"
     ]
 }
