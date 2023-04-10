@@ -1,0 +1,8 @@
+{
+    "key": "mouse-wheel-zoom",
+    "name": "编辑器字体缩放",
+    "description": "按住 Ctrl / ⌘ 键并滚动鼠标滚轮时对编辑器字体大小进行缩放。",
+    "author": "Zuoqiu-Yingyi",
+    "url": "https://github.com/Zuoqiu-Yingyi/siyuan-theme-dark-plus/blob/main/script/module/wheel.js",
+    "version": "0.1.0"
+}
