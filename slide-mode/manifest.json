@@ -1,0 +1,9 @@
+{
+  "key": "slide-mode",
+  "name": "演示模式",
+  "description": "把你当前的笔记以演示模式展示，需要有---分页",
+  "author": "zxhd863943427",
+  "url": "https://github.com/zxhd863943427/siyuan-slide-mode",
+  "version": "0.0.1",
+  "forceUpdate": false
+}
