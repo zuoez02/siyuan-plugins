@@ -4,7 +4,7 @@
 
 本插件比较适合笔记本比较多的人，用于快速在不同笔记本创建今日的笔记。
 
-![日记选项](https://img-bed-1255650068.cos.ap-chengdu.myqcloud.com/inbox/2023/04/10-12_34_04-20230410123403.png)
+![日记选项](https://img-bed-1255650068.cos.ap-chengdu.myqcloud.com/inbox/DailyNoteToday.webp)
 
 ## 功能介绍
 
