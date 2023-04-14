@@ -22,7 +22,8 @@
 
 ### 参考&感谢
 
-| 开发者/项目                                                  | 描述     | 说明 |
-| ------------------------------------------------------------ | -------- | ---- |
-| [zuoez02](https://github.com/zuoez02)/[siyuan-plugin-system](https://github.com/zuoez02/siyuan-plugin-system) | 插件系统 |      |
+| 开发者/项目                                                  | 描述                                                         | 说明         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------ |
+| [leolee9086](https://github.com/leolee9086) / [cc-template](https://github.com/leolee9086/cc-template) | 使用挂件渲染模板；[木兰宽松许可证， 第2版](https://github.com/leolee9086/cc-template/blob/main/LICENSE) | 点击打开文档 |
+| [zuoez02](https://github.com/zuoez02)/[siyuan-plugin-system](https://github.com/zuoez02/siyuan-plugin-system) | 插件系统                                                     |              |
 
