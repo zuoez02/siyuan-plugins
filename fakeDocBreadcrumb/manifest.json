@@ -1,4 +1,5 @@
 {
+    "key": "fakeDocBreadcrumb",
     "name": "(伪)文档面包屑",
     "description": "一个虚拟的文档面包屑",
     "author": "OpaqueGlass",

@@ -2,7 +2,7 @@
 
 [English](https://github.com/OpaqueGlass/syplugin-my-plugin-collection/blob/main/fakeDocBreadcrumb/README_english.md)
 
-> 当前版本：v0.0.1 
+> 当前版本：v0.1.0
 
 ### 快速开始
 
@@ -22,7 +22,7 @@
 
 ### 参考&感谢
 
-| 开发者/项目                                                  | 描述 | 说明                         |
-| ------------------------------------------------------------ | ---- | ---------------------------- |
-| [UFDXD](https://github.com/UFDXD)/[HBuilderX-Light](https://github.com/UFDXD/HBuilderX-Light) | 主题 | 参考其标题下父子文档信息实现 |
+| 开发者/项目                                                  | 描述     | 说明 |
+| ------------------------------------------------------------ | -------- | ---- |
+| [zuoez02](https://github.com/zuoez02)/[siyuan-plugin-system](https://github.com/zuoez02/siyuan-plugin-system) | 插件系统 |      |
 

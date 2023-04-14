@@ -1,4 +1,5 @@
 {
+    "key": "hierarchyNavigate",
     "name": "文档上下层级导航",
     "description": "参考HBuilderX-Light主题的插件实现",
     "author": "OpaqueGlass",
