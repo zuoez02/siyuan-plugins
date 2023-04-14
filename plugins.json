@@ -17,6 +17,8 @@
         "mouse-wheel-zoom",
         "AdjustmentBlockSize",
         "RunYourNote",
-        "slide-mode"
+        "slide-mode",
+        "fakeDocBreadcrumb",
+        "hierarchyNavigate"
     ]
 }
