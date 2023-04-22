@@ -2,7 +2,7 @@
 
 [English](https://github.com/frostime/siyuan-plugin-open-diary/blob/master/README-en.md)
 
-本插件比较适合笔记本比较多的人，用于快速在不同笔记本创建今日的笔记。
+本插件比较适合笔记本比较多的人，用于快速在不同笔记本创建今日的笔记，并将块在不同笔记中移动。
 
 ![日记选项](https://img-bed-1255650068.cos.ap-chengdu.myqcloud.com/inbox/DailyNoteToday.webp)
 
@@ -30,6 +30,12 @@
     - 多语言支持
 
     ![Setting](https://img-bed-1255650068.cos.ap-chengdu.myqcloud.com/SiYuan/Setting.webp)
+
+6. 移动块
+    - 选中块，「Alt+右键」，可以调处一个移动块的面板
+    - 选择笔记本，可以把当前块移动到对应笔记本今天的日记下
+
+    ![](https://img-bed-1255650068.cos.ap-chengdu.myqcloud.com/SiYuan/MoveBlock.webp)
 
 ## CHANGELOG
 
