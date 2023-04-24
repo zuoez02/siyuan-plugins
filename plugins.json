@@ -1,5 +1,6 @@
 {
     "plugins": [
+        "color-schemes",
         "toolbar-plus",
         "hide-vip-func",
         "more-background",
