@@ -15,14 +15,14 @@ let styleContent = `
 `;
 for (let i = 0; i < 10; i++) {
     styleContent += `
-    div[custom-indent="${i+1}"] {
+    div[custom-tool-plus-indent="${i+1}"] {
         text-indent: ${i+1}em;
     }
     `
 }
 const styleId = 'toolbar-plus';
 
-const indentProperty = 'custom-indent';
+const indentProperty = 'custom-tool-plus-indent';
 
 const defaultConf = {
     fixToolbar: true,
