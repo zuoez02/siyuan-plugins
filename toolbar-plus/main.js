@@ -83,7 +83,8 @@ class ToolbarPlusPlugin extends Plugin {
             const children = toolbar.children;
             for (const button of children) {
                 button.classList.remove('b3-tooltips__n');
-                button.classList.add('b3-tooltips__s');
+                button.classList.remove('b3-tooltips__ne');
+                button.classList.add('b3-tooltips__se');
             }
             this.createIndentButton(toolbar);
             this.createOutdentButton(toolbar);
@@ -95,7 +96,7 @@ class ToolbarPlusPlugin extends Plugin {
             return;
         }
         const button = document.createElement('button');
-        button.classList.add('protyle-toolbar__item', 'b3-tooltips', 'b3-tooltips__s');
+        button.classList.add('protyle-toolbar__item', 'b3-tooltips', 'b3-tooltips__se');
         button.setAttribute('aria-label', '缩进');
         button.innerHTML = '<svg><use xlink:href="#iconIndent"></use></svg>';
         button.id = 'indent';
@@ -113,7 +114,7 @@ class ToolbarPlusPlugin extends Plugin {
             return;
         }
         const button = document.createElement('button');
-        button.classList.add('protyle-toolbar__item', 'b3-tooltips', 'b3-tooltips__s');
+        button.classList.add('protyle-toolbar__item', 'b3-tooltips', 'b3-tooltips__se');
         button.setAttribute('aria-label', '取消缩进');
         button.innerHTML = '<svg><use xlink:href="#iconOutdent"></use></svg>';
         button.id = 'outdent';
