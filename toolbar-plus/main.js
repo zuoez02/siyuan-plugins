@@ -4,12 +4,31 @@ let styleContent = `
 .protyle-toolbar {
     display: flex !important;
     position: absolute !important;
-    top: 0 !important;
+    top: 30px !important;
+    padding-left: 6px;
+    border-top: 1px solid var(--b3-border-color);
+    border-bottom: 1px solid var(--b3-border-color);
     left: 0 !important;
     width: 100%;
     border-radius: 0;
     box-shadow: none;
     transform: none;
+}
+
+.protyle-content {
+    margin-top: 32px;
+}
+
+html[data-theme-mode="light"][data-light-theme="Savor"] .protyle-toolbar,
+html[data-theme-mode="dark"][data-dark-theme="Savor"] .protyle-toolbar {
+    top: 42px !important;
+    border-radius: 0;
+}
+
+html[data-theme-mode="light"][data-light-theme="Rem Craft"] .protyle-toolbar,
+html[data-theme-mode="dark"][data-dark-theme="Rem Craft"] .protyle-toolbar {
+    top: 40px !important;
+    border-radius: 0;
 }
 
 `;
