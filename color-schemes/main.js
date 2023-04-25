@@ -318,8 +318,10 @@ background-color: var(--diy-background13) !important;
 
     async onload() {
         this.pickr = await import("https://esm.sh/v117/@simonwep/pickr@1.8.2/es2022/pickr.mjs")
+        this.initScheme();
         await this.loadConfig();
-        this.saveConfig();
+        await this.saveConfig();
+        this.applyScheme(this.config.current);
         this.registerSettingRender((el) => {
             const options = Object.keys(this.config.colorSchemes);
             el.innerHTML = `
@@ -390,8 +392,24 @@ background-color: var(--diy-background13) !important;
         })
     }
 
-    onunload() {
+    async initScheme() {
+        let InitsSchemes
+        try{
+            InitsSchemes = await this.loadSchemeFromFile('default');
+        }
+        catch(e){}
+        if (!InitsSchemes) {
+            InitsSchemes = defaultSchemes["schemes"];
+            this.saveScheme("default", InitsSchemes);
+        }
+    }
 
+    onunload() {
+        const id = this.config.colorSchemeStyleId;
+        let el = document.getElementById(id);
+        if (el) {
+            el.remove();
+        }
     }
 
     createPickr(element, colorName) {
