@@ -373,17 +373,13 @@ background-color: var(--diy-background13) !important;
         document.addEventListener("contextmenu", function (event) {
             var target = event.target;
             if (target.className === "color__square") {
-                console.log("yanse")
+
                 // 确定字体颜色还是背景
                 let colorStyle = target.style.color === "" ? target.style.backgroundColor : target.style.color
                 let colorName = colorStyle.slice(14, -1)
 
 
-                console.log(colorName)
-                const id = that.config.colorSchemeStyleId;
-                let el = document.getElementById(id);
-                console.log(that.getColor(el, "--diy-" + colorName))
-                console.log(that.schemes)
+
 
 
                 // 创建调色盘
@@ -460,11 +456,10 @@ background-color: var(--diy-background13) !important;
         let that = this;
         pickrInit.on("save", (color) => {
             let colorValue = color ? color.toHEXA() : "";
-            console.log(color)
-            console.log(colorValue)
+
             window.tempColor = color
             that.setColor(el, colorName, colorValue)
-            console.log(that.schemes)
+
             that.saveScheme(that.config.current, that.schemes)
         });
         return pickrInit;
@@ -608,7 +603,7 @@ background-color: var(--diy-background13) !important;
     }
     getColor(element, name) {
         let mode = document.querySelector("html").getAttribute("data-theme-mode")
-        console.log(element.sheet)
+
         let rootRuleLight;
         let rootRuleDark;
         for (let i = 0; i < element.sheet.cssRules.length; i++) {
@@ -636,7 +631,7 @@ background-color: var(--diy-background13) !important;
     setColor(element, name, value) {
         value = value.toString();
         let mode = document.querySelector("html").getAttribute("data-theme-mode")
-        console.log(element.sheet)
+
         let rootRuleLight;
         let rootRuleDark;
         for (let i = 0; i < element.sheet.cssRules.length; i++) {
