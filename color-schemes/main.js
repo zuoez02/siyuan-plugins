@@ -11,7 +11,7 @@ const defaultConfig = {
 const defaultSchemes = {
     "name": "default",
     "schemes": {
-        "light":{
+        "light": {
             "color1": "rgb(97, 26, 21)",
             "color2": "rgb(102, 60, 0)",
             "color3": "rgb(13 60 97)",
@@ -39,7 +39,7 @@ const defaultSchemes = {
             "background12": "rgba(253, 198, 200, 0.5)",
             "background13": "#202124"
         },
-        "dark":{
+        "dark": {
             "color1": "rgb(243 153 147)",
             "color2": "rgb(255 213 153)",
             "color3": "rgb(166 213 250)",
@@ -536,21 +536,33 @@ background-color: var(--diy-background13) !important;
         // }
         let schemes
         //如果this.schemes不存在，则读取json并初始化 schemes
-        if (this.schemes === null) {
-            schemes = await this.loadSchemeFromFile(name);
-            if (!schemes && name === 'default') {
-                schemes = defaultSchemes["schemes"]
-                this.saveScheme("default",schemes)
-            }
-            else if (!schemes) {
-                new Notification({ type: 'error', message: '未找到配色方案' }).show();
-                return;
-            }
-            this.schemes = schemes
+        // if (this.schemes === null) {
+        //     schemes = await this.loadSchemeFromFile(name);
+        //     if (!schemes && name === 'default') {
+        //         schemes = defaultSchemes["schemes"]
+        //         this.saveScheme("default",schemes)
+        //     }
+        //     else if (!schemes) {
+        //         new Notification({ type: 'error', message: '未找到配色方案' }).show();
+        //         return;
+        //     }
+        //     this.schemes = schemes
+        // }
+        // else {
+        //     schemes = this.schemes
+        // }
+
+        schemes = await this.loadSchemeFromFile(name);
+        if (!schemes && name === 'default') {
+            schemes = defaultSchemes["schemes"]
+            this.saveScheme("default", schemes)
         }
-        else {
-            schemes = this.schemes
+        else if (!schemes) {
+            new Notification({ type: 'error', message: '未找到配色方案' }).show();
+            return;
         }
+        this.schemes = schemes
+
 
         const lightSchemes = schemes["light"]
         const darkSchemes = schemes["dark"]
