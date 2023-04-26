@@ -1,8 +1,8 @@
 {
     "key": "hierarchyNavigate",
     "name": "文档上下层级导航",
-    "description": "参考HBuilderX-Light主题的插件实现",
+    "description": "参考HBuilderX-Light主题的插件实现 | [Navigation to Parent and Child docs] derived from siyuan theme \"HBuilderX-Light\"",
     "author": "OpaqueGlass",
     "url": "https://github.com/OpaqueGlass/syplugin-my-plugin-collection",
-    "version": "0.1.0"
+    "version": "0.1.1"
 }

@@ -18,7 +18,7 @@ class HierachyNavigatePlugin extends Plugin {
         if (g_tabbarElement == undefined) {
             g_isMobile = true;
         }
-        console.log('TestRemotePluginCreated');
+        console.log('HierarchyNavigatorPluginCreated');
         // ~~若思源设定非中文，则显示英文~~
         let siyuanLanguage;
         try{
@@ -34,13 +34,74 @@ class HierachyNavigatePlugin extends Plugin {
     }
 
     async onload() {
+        let PLUGIN_SETTING = [
+            new SettingProperty("font_size", ""),
+            new SettingProperty("")
+        
+        ];
+        // 设置语言（已在constructor完成）
+
+        // 读取配置
+        const settingCache = await this.loadStorage("settings.json");
+        // 解析并载入配置
+        let settingData = JSON.parse(settingCache);
+        Object.assign(g_setting, g_setting_default);
+        Object.assign(g_setting, settingData);
+        // console.log("LOADED",settingData);
+        // console.log("LOADED_R", g_setting);
+        // 生成配置页面
+        this.registerSettingRender((el) => {
+            const hello = document.createElement('div');
+            const settingForm = document.createElement("form");
+            settingForm.setAttribute("name", CONSTANTS.PLUGIN_NAME);
+            settingForm.innerHTML = generateSettingPanelHTML([
+                new SettingProperty("fontSize", "NUMBER", [0, 1024]),
+                new SettingProperty("sibling", "SWITCH", null),
+                new SettingProperty("popupWindow", "SELECT", [
+                    {value:0},
+                    {value:1},
+                    {value:2},
+                ]),
+                new SettingProperty("docMaxNum", "NUMBER", [0, 1024]),
+                new SettingProperty("nameMaxLength", "NUMBER", [0, 1024]),
+                new SettingProperty("icon", "SELECT", [
+                    {value:0},
+                    {value:1},
+                    {value:2}]),
+                new SettingProperty("linkDivider", "TEXT", null),
+                new SettingProperty("docLinkClass", "TEXT", null),
+                new SettingProperty("parentBoxCSS", "TEXTAREA", null),
+                new SettingProperty("siblingBoxCSS", "TEXTAREA", null),
+                new SettingProperty("childBoxCSS", "TEXTAREA", null),
+                new SettingProperty("docLinkCSS", "TEXTAREA", null),
+            ]);
+
+            hello.appendChild(settingForm);
+            el.appendChild(hello);
+            hello.addEventListener('change', (event) => {
+                // this.writeStorage('hello.txt', 'world' + Math.random().toFixed(2));
+                console.log('CHANGED');
+                let uiSettings = loadUISettings(settingForm);
+                clearTimeout(g_saveTimeout);
+                g_saveTimeout = setTimeout(()=>{
+                    this.writeStorage(`settings.json`, JSON.stringify(uiSettings));
+                    Object.assign(g_setting, uiSettings);
+                    removeStyle();
+                    setStyle();  
+                    console.log("SAVED");
+                }, CONSTANTS.SAVE_TIMEOUT);
+            });
+            g_writeStorage = this.writeStorage;
+        });
+        // 开始运行
         setObserver();
-        console.log("PLUGIN_API", siyuan, serverApi);
+        setStyle()
     }
 
     onunload() {
         this.el && this.el.remove();
         removeObserver();
+        removeStyle();
     }
 }
 
@@ -53,20 +114,106 @@ module.exports = {
  */
 let g_switchTabObserver; // 页签切换与新建监视器
 let g_windowObserver; // 窗口监视器
-let CONSTANTS = {
+const CONSTANTS = {
     RANDOM_DELAY: 300, // 插入挂件的延迟最大值，300（之后会乘以10）对应最大延迟3秒
     OBSERVER_RANDOM_DELAY: 500, // 插入链接、引用块和自定义时，在OBSERVER_RANDOM_DELAY_ADD的基础上增加延时，单位毫秒
     OBSERVER_RANDOM_DELAY_ADD: 100, // 插入链接、引用块和自定义时，延时最小值，单位毫秒
     OBSERVER_RETRY_INTERVAL: 1000, // 找不到页签时，重试间隔
+    STYLE_ID: "hierarchy-navigate-plugin-style",
+    ICON_ALL: 2,
+    ICON_NONE: 0,
+    ICON_CUSTOM_ONLY: 1,
+    PLUGIN_NAME: "og_hierachy_navigate",
+    SAVE_TIMEOUT: 900,
+    CONTAINER_CLASS_NAME: "og-hierachy-navigate-doc-container", 
+    PARENT_CONTAINER_ID: "og-hierachy-navigate-parent-doc-container",
+    CHILD_CONTAINER_ID: "og-hierachy-navigate-children-doc-container",
+    SIBLING_CONTAINER_ID: "og-hierachy-navigate-sibling-doc-container",
+    INDICATOR_CLASS_NAME: "og-hierachy-navigate-doc-indicator",
+    POP_NONE: 0,
+    POP_LIMIT: 1,
+    POP_ALL: 2,
 }
 let g_observerRetryInterval;
 let g_observerStartupRefreshTimeout;
 let g_TIMER_LABLE_NAME_COMPARE = "文档栏插件";
 let g_tabbarElement = undefined;
-let g_fontSize = "12px";
+let g_saveTimeout;
+let g_writeStorage;
 let g_isMobile = false;
+let g_setting = {
+    fontSize: null,
+    parentBoxCSS: null,
+    siblingBoxCSS: null,
+    childBoxCSS: null,
+    docLinkCSS: null,
+    docLinkClass: "",
+    icon: null, // 0禁用 1只显示设置图标的 2显示所有
+    sibling: null, // 为true则在父文档不存在时清除
+    nameMaxLength: null,// 文档名称最大长度 0不限制
+    docMaxNum: null, // API最大文档显示数量 0不限制（请求获取全部子文档），建议设置数量大于32
+    linkDivider: null,
+    popupWindow: null,
+};
+let g_setting_default = {
+    fontSize: 12,
+    parentBoxCSS: "",
+    siblingBoxCSS: "",
+    childBoxCSS: "",
+    docLinkCSS: "",
+    docLinkClass: "",
+    icon: CONSTANTS.ICON_CUSTOM_ONLY, // 0禁用 1只显示设置图标的 2显示所有
+    sibling: false, // 为true则在父文档不存在时清除
+    nameMaxLength: 20,// 文档名称最大长度 0不限制
+    docMaxNum: 512, // API最大文档显示数量 0不限制（请求获取全部子文档），建议设置数量大于32
+    limitPopUpScope: false,// 限制浮窗触发范围
+    linkDivider: "",
+    popupWindow: CONSTANTS.POP_LIMIT,
+};
 
-/* API */
+// debug push
+let g_DEBUG = 0; // 2 写入前台 1 只控制台
+let g_DEBUG_ELEM = null;
+function debugPush(str, ...args) {
+    if (g_DEBUG == 0) return;
+    for (let arg of args) {
+        str += arg;
+    }
+    if (g_DEBUG_ELEM && g_DEBUG > 1) {   
+        g_DEBUG_ELEM.innerText = str;
+    }else{
+        console.log(str);
+    }
+}
+
+class SettingProperty {
+    id;
+    simpId;
+    name;
+    desp;
+    type;
+    limit;
+    value;
+    /**
+     * 设置属性对象
+     * @param {*} id 唯一定位id
+     * @param {*} type 设置项类型
+     * @param {*} limit 限制
+     */
+    constructor(id, type, limit, value = undefined) {
+        this.id = `${CONSTANTS.PLUGIN_NAME}_${id}`;
+        this.simpId = id;
+        this.name = language[`setting_${id}_name`];
+        this.desp = language[`setting_${id}_desp`];
+        this.type = type;
+        this.limit = limit;
+        if (value) {
+            this.value = value;
+        }else{
+            this.value = g_setting[this.simpId];
+        }
+    }
+}
 
 
 /**
@@ -90,7 +237,7 @@ function setObserver() {
             }
         });
         g_switchTabObserver.observe(window.document.querySelector(".protyle-background[data-node-id]"), {"attributes": true, "attributeFilter": ["data-node-id"]});
-        console.log("MOBILE_LOADED");
+        debugPush("MOBILE_LOADED");
         main();
         return;
     }
@@ -160,11 +307,12 @@ function removeObserver() {
 }
 
 async function main(targets) {
-    console.log("TARGETS", targets);
     // 获取当前文档id
     const docId = getCurrentDocIdF();
+    debugPush(docId);
     // 防止重复执行
-    if (window.document.querySelector(`.protyle-title[data-node-id="${docId}"] #heading-docs-container`) != null) return;
+    if (window.document.querySelector(`.protyle-title[data-node-id="${docId}"] #og-hn-heading-docs-container`) != null) return;
+    debugPush("main防重复检查已通过");
     if (docId == null) {
         console.warn("未能读取到打开文档的id");
         return ;
@@ -174,7 +322,7 @@ async function main(targets) {
     console.log(parentDoc, childDoc, siblingDoc);
     // 生成插入文本
     const htmlElem = generateText(parentDoc, childDoc, siblingDoc, docId);
-    console.log(htmlElem);
+    console.log("FIN",htmlElem);
     // 应用插入
     setAndApply(htmlElem, docId);
 }
@@ -185,18 +333,25 @@ async function main(targets) {
 async function getDocumentRelations(docId) {
     let sqlResult = await serverApi.sql(`SELECT * FROM blocks WHERE id = "${docId}"`);
      // 获取父文档
-    const parentDoc = await getParentDocument(docId, sqlResult);
+    let parentDoc = await getParentDocument(docId, sqlResult);
     
     // 获取子文档
-    const childDocs = await getChildDocuments(docId, sqlResult);
+    let childDocs = await getChildDocuments(docId, sqlResult);
 
     let noParentFlag = false;
     if (parentDoc.length == 0) {
         noParentFlag = true;
     }
-    console.log(parentDoc);
     // 获取同级文档
-    const siblingDocs = await getSiblingDocuments(docId, parentDoc, sqlResult, noParentFlag);
+    let siblingDocs = await getSiblingDocuments(docId, parentDoc, sqlResult, noParentFlag);
+
+    // 超长部分裁剪
+    if (childDocs.length > g_setting.docMaxNum && g_setting.docMaxNum != 0) {
+        childDocs = childDocs.slice(0, g_setting.docMaxNum);
+    }
+    if (siblingDocs.length > g_setting.docMaxNum && g_setting.docMaxNum != 0) {
+        siblingDocs = siblingDocs.slice(0, g_setting.docMaxNum);
+    }
 
     // 返回结果
     return [ parentDoc, childDocs, siblingDocs ];
@@ -210,12 +365,12 @@ async function getParentDocument(docId, sqlResult) {
 }
 
 async function getChildDocuments(docId, sqlResult) {
-    let childDocs = await listDocsByPath(sqlResult[0].path, sqlResult[0].box, );
+    let childDocs = await listDocsByPath({path: sqlResult[0].path, notebook: sqlResult[0].box});
     return childDocs.files;
 }
 
 async function getSiblingDocuments(docId, parentSqlResult, sqlResult, noParentFlag) {
-    let siblingDocs = await listDocsByPath(noParentFlag ? "/" : parentSqlResult[0].path, sqlResult[0].box);
+    let siblingDocs = await listDocsByPath({path: noParentFlag ? "/" : parentSqlResult[0].path, notebook: sqlResult[0].box});
     return siblingDocs.files;
 }
 
@@ -225,81 +380,200 @@ async function getSiblingDocuments(docId, parentSqlResult, sqlResult, noParentFl
  * 生成插入文本
  */
 function generateText(parentDoc, childDoc, siblingDoc, docId) {
-    let STYLE = `style="margin-right: 3px; "`;
+    const CONTAINER_STYLE = `padding: 0px 6px;`;
     let htmlElem = document.createElement("div");
-    htmlElem.setAttribute("id", "heading-docs-container");
-    htmlElem.style.fontSize = g_fontSize;
+    htmlElem.setAttribute("id", "og-hn-heading-docs-container");
+    htmlElem.style.fontSize = `${g_setting.fontSize}px`;
     let parentElem = document.createElement("div");
-    parentElem.setAttribute("id", "parent-doc-container");
-    parentElem.style.borderBottom = "1px dotted gray";
-    let parentElemInnerText = `<span class="heading-docs-indicator">${language["parent_nodes"]}</span>`;
+    parentElem.setAttribute("id", CONSTANTS.PARENT_CONTAINER_ID);
+    parentElem.style.cssText = CONTAINER_STYLE;
+    let parentElemInnerText = `<span class="${CONSTANTS.INDICATOR_CLASS_NAME}">${language["parent_nodes"]}</span>`;
+    let parentFlag = false;
     for (let doc of parentDoc) {
-        parentElemInnerText += `<a data-id="${doc.id}" class="refLinks childDocLinks" style="color: var(--b3-protyle-inline-link-color)" >${doc.content}</a>`;
+        parentElemInnerText += docLinkGenerator(doc);
+        parentFlag = true;
     }
     let siblingElem = document.createElement("div");
-    siblingElem.setAttribute("id", "parent-doc-container");
-    siblingElem.style.borderBottom = "1px dotted gray";
-    let siblingElemInnerText = `<span class="heading-docs-indicator">${language["sibling_nodes"]}</span>`;
+    siblingElem.setAttribute("id", CONSTANTS.SIBLING_CONTAINER_ID);
+    siblingElem.style.cssText = CONTAINER_STYLE;
+    let siblingElemInnerText = `<span class="${CONSTANTS.INDICATOR_CLASS_NAME}">${language["sibling_nodes"]}</span>`;
 
-    if (parentElemInnerText != `<span class="heading-docs-indicator">${language["parent_nodes"]}</span>`) {
+    if (parentFlag) {
         parentElem.innerHTML = parentElemInnerText;
         htmlElem.appendChild(parentElem);
-    }else{
-        
+    }else if (g_setting.sibling){
         for (let doc of siblingDoc) {
-            let emojiStr = getEmojiHtmlStr(doc.icon, true);
-            siblingElemInnerText += `<a class="refLinks childDocLinks" data-type='block-ref' data-subtype="d" style="color: var(--b3-protyle-inline-link-color)" data-id="${doc.id}">${emojiStr}${doc.name.substring(0, doc.name.length - 3)}</a>   `;
+            siblingElemInnerText += docLinkGenerator(doc);
         }
-        if (siblingElemInnerText != `<span class="heading-docs-indicator">${language["sibling_nodes"]}</span>`) {
+        if (siblingElemInnerText != `<span class="${CONSTANTS.INDICATOR_CLASS_NAME}">${language["sibling_nodes"]}</span>`) {
             siblingElem.innerHTML = siblingElemInnerText;
             htmlElem.appendChild(siblingElem);
         }else{
             siblingElem.innerHTML = siblingElemInnerText + language["none"];
             htmlElem.appendChild(siblingElem);
         }
+        
+    }else{
+        parentElem.innerHTML = parentElemInnerText + language["none"];
+        htmlElem.appendChild(parentElem);
     }
-
     let childElem = document.createElement("div");
-    childElem.setAttribute("id", "parent-doc-container");
-    childElem.style.borderBottom = "1px solid gray";
-    let childElemInnerText = `<span class="heading-docs-indicator">${language["child_nodes"]}</span>`;
+    childElem.setAttribute("id", CONSTANTS.CHILD_CONTAINER_ID);
+    
+    childElem.style.cssText = CONTAINER_STYLE;
+    let childElemInnerText = `<span class="${CONSTANTS.INDICATOR_CLASS_NAME}">${language["child_nodes"]}</span>`;
+    let childFlag = false;
     for (let doc of childDoc) {
-        let emojiStr = getEmojiHtmlStr(doc.icon, true);
-        childElemInnerText += `<a class="refLinks childDocLinks" data-type='block-ref' data-subtype="d" style="color: var(--b3-protyle-inline-link-color)" data-id="${doc.id}">${emojiStr}${doc.name.substring(0, doc.name.length - 3)}</a>   `;
+        childElemInnerText += docLinkGenerator(doc);
+        childFlag = true;
     }
-    if (childElemInnerText != `<span class="heading-docs-indicator">${language["child_nodes"]}</span>`) {
+    if (childFlag) {
         childElem.innerHTML = childElemInnerText;
         htmlElem.appendChild(childElem);
     }else{
         childElem.innerHTML = childElemInnerText + language["none"];
         htmlElem.appendChild(childElem);
     }
-
-    console.log(parentElemInnerText, childElemInnerText, siblingElemInnerText);
+    if (g_DEBUG > 1) {
+        let debug = window.document.createElement("div");
+        debug.setAttribute("id", "og-debug");
+        htmlElem.appendChild(debug);
+        g_DEBUG_ELEM = debug;
+    }
+    
+    parentElem.classList.add(CONSTANTS.CONTAINER_CLASS_NAME);
+    siblingElem.classList.add(CONSTANTS.CONTAINER_CLASS_NAME);
+    childElem.classList.add(CONSTANTS.CONTAINER_CLASS_NAME);
+    
     return htmlElem;
+    function docLinkGenerator(doc) {
+        let emojiStr = getEmojiHtmlStr(doc.icon, doc?.subFileCount != 0);
+        let docName = isValidStr(doc?.name) ? doc.name.substring(0, doc.name.length - 3) : doc.content;
+        let trimDocName = docName;
+        // 文件名长度限制
+        if (docName.length > g_setting.nameMaxLength && g_setting.nameMaxLength != 0) trimDocName = docName.substring(0, g_setting.nameMaxLength) + "...";
+        let result = "";
+        switch (parseInt(g_setting.popupWindow)) {
+            case CONSTANTS.POP_ALL: {
+                result = `<span class="refLinks docLinksWrapper ${g_setting.docLinkClass == null ? "": escapeClass(g_setting.docLinkClass)}"
+                    data-type='block-ref'
+                    data-subtype="d"
+                    style="font-size: ${g_setting.fontSize}px;"
+                    title="${docName}"
+                    data-id="${doc.id}">
+                        ${emojiStr}${trimDocName}
+                    </span>`
+                break;
+            }
+            case CONSTANTS.POP_LIMIT:{
+                result = `<span class="refLinks docLinksWrapper ${g_setting.docLinkClass == null ? "":escapeClass(g_setting.docLinkClass)}"
+                    data-subtype="d"
+                    style="font-size: ${g_setting.fontSize}px; display: inline-block"
+                    title="${docName}"
+                    data-id="${doc.id}">
+                        <span data-type='block-ref'
+                        data-subtype="d"
+                        data-id="${doc.id}"
+                        >${emojiStr}</span><span>${trimDocName}</span>
+                    </span>`
+                break;
+            }
+            case CONSTANTS.POP_NONE: {
+                result = `<span class="refLinks docLinksWrapper ${g_setting.docLinkClass == null ? "":escapeClass(g_setting.docLinkClass)}"
+
+                    data-subtype="d"
+                    style="font-size: ${g_setting.fontSize}px;"
+                    title="${docName}"
+                    data-id="${doc.id}">
+                        ${emojiStr}${trimDocName}
+                    </span>`
+                break;
+            }
+            default: {
+                console.warn("WARN数据格式不正常");
+                g_setting.icon = g_setting_default.icon;
+                g_writeStorage("settings.json", JSON.stringify(g_setting));
+            }
+        }
+        return result;
+        function escapeClass(val) {
+            return val.replaceAll(`"`, "");
+        }
+    }
 }
 
 function setAndApply(htmlElem, docId) {
     if (g_isMobile) {
-        window.document.querySelector(`.protyle-background ~ #heading-docs-container`)?.remove();
-        // if (window.document.querySelector(`.protyle-background[data-node-id="${docId}"] #heading-docs-container`) != null) return;
+        window.document.querySelector(`.protyle-background ~ #og-hn-heading-docs-container`)?.remove();
+        // if (window.document.querySelector(`.protyle-background[data-node-id="${docId}"] #og-hn-heading-docs-container`) != null) return;
         htmlElem.style.paddingLeft = "24px";
         htmlElem.style.paddingRight = "16px";
         htmlElem.style.paddingTop = "16px";
-        window.document.querySelector(`.fn__flex-column .protyle-background[data-node-id="${docId}"]`).insertAdjacentElement("afterend", htmlElem);
-        [].forEach.call(window.document.querySelectorAll(`#heading-docs-container  a.refLinks`), (elem)=>{
+        window.document.querySelector(`.protyle-background[data-node-id]`).insertAdjacentElement("afterend", htmlElem);
+        [].forEach.call(window.document.querySelectorAll(`#og-hn-heading-docs-container span.refLinks`), (elem)=>{
             elem.addEventListener("click", openRefLink);
-            elem.style.marginRight = "10px";
         });
+        debugPush("安卓端写入完成", docId);
         return;
     }
-    if (window.document.querySelector(`.protyle-title[data-node-id="${docId}"] #heading-docs-container`) != null) return;
-    // if (window.document.querySelector(`.protyle-title[data-node-id="${docId}"] #heading-docs-container`) != null) return;
-    window.document.querySelector(`.layout__wnd--active .protyle.fn__flex-1:not(.fn__none) .protyle-title`)?.append(htmlElem);
-    [].forEach.call(window.document.querySelectorAll(`#heading-docs-container  a.refLinks`), (elem)=>{
+    if (window.document.querySelector(`.layout__wnd--active .protyle.fn__flex-1:not(.fn__none) #og-hn-heading-docs-container`) != null) return;
+    // if (window.document.querySelector(`.protyle-title[data-node-id="${docId}"] #og-hn-heading-docs-container`) != null) return;
+    window.document.querySelector(`.layout__wnd--active .protyle.fn__flex-1:not(.fn__none) .protyle-title .protyle-attr`)?.insertAdjacentElement("beforebegin",htmlElem);
+    [].forEach.call(window.document.querySelectorAll(`#og-hn-heading-docs-container  span.refLinks`), (elem)=>{
         elem.addEventListener("click", openRefLink);
         elem.style.marginRight = "10px";
     });
+}
+
+function setStyle() {
+    const head = document.getElementsByTagName('head')[0];
+    const style = document.createElement('style');
+    style.setAttribute("id", CONSTANTS.STYLE_ID);
+    const defaultLinkStyle = `
+    .${CONSTANTS.CONTAINER_CLASS_NAME} span.docLinksWrapper{
+        background-color: var(--b3-protyle-code-background);/*var(--b3-protyle-inline-code-background); --b3-protyle-code-background  --b3-theme-surface-light*/
+        color: var(--b3-protyle-inline-code-color);
+        line-height: ${g_setting.fontSize + 2}px;
+        font-weight: 400;
+        display: inline-flex;
+        align-items: center;
+        box-sizing: border-box;
+        padding: 4px 6px;
+        border-radius: ${(g_setting.fontSize + 2)}px;
+        transition: var(--b3-transition);
+        margin-right: 10px;
+        margin-bottom: 3px;
+    }`;
+
+    style.innerHTML = `
+    #og-hn-heading-docs-container span.docLinksWrapper:hover {
+        cursor: pointer;
+        box-shadow: 0 0 2px var(--b3-list-hover);
+        opacity: .86;
+        /*background-color: var(--b3-toolbar-hover);*/
+        /*text-decoration: underline;*/
+    }
+    .${CONSTANTS.CONTAINER_CLASS_NAME} {
+        text-align: left;
+    }
+    ${g_setting.docLinkCSS == g_setting_default.docLinkCSS && g_setting.docLinkClass == g_setting_default.docLinkClass? defaultLinkStyle:""}
+    #${CONSTANTS.PARENT_CONTAINER_ID} {${styleEscape(g_setting.parentBoxCSS)}}
+
+    #${CONSTANTS.CHILD_CONTAINER_ID} {${styleEscape(g_setting.childBoxCSS)}}
+
+    #${CONSTANTS.SIBLING_CONTAINER_ID} {${styleEscape(g_setting.siblingBoxCSS)}}
+
+    .${CONSTANTS.CONTAINER_CLASS_NAME} span.docLinksWrapper {${styleEscape(g_setting.docLinkCSS)}}
+    `;
+    head.appendChild(style);
+}
+
+function styleEscape(str) {
+    return str.replace(new RegExp("<[^<]*style[^>]*>", "g"), "");
+}
+
+function removeStyle() {
+    document.getElementById(CONSTANTS.STYLE_ID)?.remove();
 }
 
 /**
@@ -309,14 +583,14 @@ function setAndApply(htmlElem, docId) {
  * @returns 
  */
 function getEmojiHtmlStr(iconString, hasChild) {
-    if (iconString == undefined || iconString == null) return "";//没有icon属性，不是文档类型，不返回emoji
-    if (iconString == "") return hasChild ? "📑" : "📄";//无icon默认值
+    if (g_setting.icon == CONSTANTS.ICON_NONE) return g_setting.linkDivider;
+    // 无emoji的处理
+    if ((iconString == undefined || iconString == null ||iconString == "") && g_setting.icon == CONSTANTS.ICON_ALL) return hasChild ? "📑" : "📄";//无icon默认值
+    if ((iconString == undefined || iconString == null ||iconString == "") && g_setting.icon == CONSTANTS.ICON_CUSTOM_ONLY) return g_setting.linkDivider;
     let result = iconString;
     // emoji地址判断逻辑为出现.，但请注意之后的补全
     if (iconString.indexOf(".") != -1) {
-        // if (!setting.customEmojiEnable) return hasChild ? "📑" : "📄";//禁用自定义emoji时
-        // emoji为网络地址时，不再补全/emojis路径
-        result = `<img class="iconpic" style="width: ${g_fontSize}" src="/emojis/${iconString}"/>`;
+        result = `<img class="iconpic" style="width: ${g_setting.fontSize}px" src="/emojis/${iconString}"/>`;
     } else {
         result = `<span class="emojitext">${emojiIconHandler(iconString, hasChild)}</span>`;
     }
@@ -334,10 +608,7 @@ let emojiIconHandler = function (iconString, hasChild = false) {
         console.error("emoji处理时发生错误", iconString, err);
         return hasChild ? "📑" : "📄";
     }
-
 }
-
-
 
 async function request(url, data) {
     let resData = null;
@@ -358,12 +629,17 @@ async function parseBody(response) {
     return r.code === 0 ? r.data : null;
 }
 
-async function listDocsByPath(path, notebook = undefined, sort = undefined) {
+async function listDocsByPath({path, notebook = undefined, sort = undefined, maxListLength = undefined}) {
     let data = {
         path: path
     };
     if (notebook) data["notebook"] = notebook;
     if (sort) data["sort"] = sort;
+    if (g_setting.docMaxNum != 0) {
+        data["maxListCount"] = g_setting.docMaxNum >= 32 ? g_setting.docMaxNum : 32;
+    } else {
+        data["maxListCount"] = 0;
+    }
     let url = '/api/filetree/listDocsByPath';
     return parseBody(request(url, data));
     //文档hepath与Markdown 内容
@@ -372,6 +648,26 @@ async function listDocsByPath(path, notebook = undefined, sort = undefined) {
 function getCurrentDocIdF() {
     let thisDocId;
     thisDocId = window.top.document.querySelector(".layout__wnd--active .protyle.fn__flex-1:not(.fn__none) .protyle-background")?.getAttribute("data-node-id");
+    if (!thisDocId && g_isMobile) {
+        // UNSTABLE: 面包屑样式变动将导致此方案错误！
+        try {
+            let temp;
+            temp = window.top.document.querySelector(".protyle-breadcrumb .protyle-breadcrumb__item .popover__block[data-id]")?.getAttribute("data-id");
+            let iconArray = window.top.document.querySelectorAll(".protyle-breadcrumb .protyle-breadcrumb__item .popover__block[data-id]");
+            for (let i = 0; i < iconArray.length; i++) {
+                let iconOne = iconArray[i];
+                if (iconOne.children.length > 0 
+                    && iconOne.children[0].getAttribute("xlink:href") == "#iconFile"){
+                    temp = iconOne.getAttribute("data-id");
+                    break;
+                }
+            }
+            thisDocId = temp;
+        }catch(e){
+            console.error(e);
+            temp = null;
+        }
+    }
     if (!thisDocId) {
         thisDocId = window.top.document.querySelector(".protyle-background")?.getAttribute("data-node-id");
     }
@@ -420,13 +716,213 @@ let zh_CN = {
     "parent_nodes": "父：",
     "child_nodes": "子：",
     "sibling_nodes": "兄：",
-    "none": "无"
+    "none": "无",
+    "setting_fontSize_name": "字号",
+    "setting_fontSize_desp": "单位：px",
+    "setting_nameMaxLength_name": "文档名最大长度",
+    "setting_nameMaxLength_desp": "文档名超出的部分将被删除。设置为0则不限制。",
+    "setting_docMaxNum_name": "文档最大数量",
+    "setting_docMaxNum_desp": "当子文档或同级文档超过该值时，后续文档将不再显示。设置为0则不限制。",
+    "setting_icon_name": "文档图标",
+    "setting_icon_desp": "控制文档图标显示与否",
+    "setting_sibling_name": "文档上级为笔记本时，显示同级文档",
+    "setting_docLinkClass_name": "文档链接样式Class",
+    "setting_docLinkClass_desp": "文档链接所属的CSS class，用于套用思源已存在的样式类。例：<code>b3-chip b3-chip--middle b3-chip--pointer</code>",
+    "setting_popupWindow_name": "浮窗触发范围",
+    "setting_docLinkCSS_name": "链接样式CSS",
+    "setting_docLinkCSS_desp": "设置后，将同时禁用默认样式。您也可以在代码片段中使用选择器<code>.og-hierachy-navigate-doc-container span.docLinksWrapper</code>部分覆盖样式",
+    "setting_childBoxCSS_name": "子文档容器CSS",
+    "setting_parentBoxCSS_name": "父文档容器CSS",
+    "setting_siblingBoxCSS_name": "同级文档容器CSS",
+    "setting_parentBoxCSS_desp": "如果不修改，请留空。",
+    "setting_childBoxCSS_desp": "如果不修改，请留空。",
+    "setting_siblingBoxCSS_desp": "如果不修改，请留空。",
+    "setting_linkDivider_name": "禁用图标时文档名前缀",
+    "setting_linkDivider_desp": "在没有图标的文档链接前，加入该前缀。浮窗设置为“仅图标触发”时，前缀也用于触发浮窗。",
+    "setting_icon_option_0": "不显示",
+    "setting_icon_option_1": "仅自定义",
+    "setting_icon_option_2": "显示全部",
+    "setting_popupWindow_option_0": "不触发",
+    "setting_popupWindow_option_1": "仅图标触发",
+    "setting_popupWindow_option_2": "全部触发"
 }
 
 let en_US = {
     "parent_nodes": "Parent: ",
     "child_nodes": "Children: ",
     "sibling_nodes": "Sibling: ",
-    "none": "N/A"
+    "none": "N/A",
+    "setting_fontSize_name": "Font Size",
+    "setting_fontSize_desp": "Unit: px",
+    "setting_nameMaxLength_name": "Maximum length of the document name",
+    "setting_nameMaxLength_desp": "The excess part of the document name will be hided. If set to 0, there is no limit.",
+    "setting_docMaxNum_name": "Maximum number of documents",
+    "setting_docMaxNum_desp": "When a subdocument or sibling document exceeds this value, subsequent documents are not displayed. If set to 0, there is no limit.",
+    "setting_icon_name": "Document Icon",
+    "setting_icon_desp": "Controls whether the document icon is displayed",
+    "setting_sibling_name": "Display sibling documents",
+    "setting_sibling_desp": "When the parent document is a notebook, the sibling document is displayed",
+    "setting_docLinkClass_name": "Document link style Class",
+    "setting_docLinkClass_desp": "The CSS class to which the document link belongs is used to apply siyuan's existing style class. e.g.<code>b3-chip b3-chip--middle b3-chip--pointer</code>",
+    "setting_popupWindow_name": "Set popup window trigger range",
+    "setting_popupWindow_desp": "The floating window(popup window) is triggered when the mouse hovers over the area",
+    "setting_docLinkCSS_name": "Link style CSS",
+    "setting_docLinkCSS_desp": "Once set, the default style is also disabled",
+    "setting_childBoxCSS_name": "Subdocument container CSS",
+    "setting_parentBoxCSS_name": "Parent document container CSS",
+    "setting_siblingBoxCSS_name": "Sibling document container CSS",
+    "setting_parentBoxCSS_desp": "If no modification, please leave it blank",
+    "setting_siblingBoxCSS_desp": "If no modification, please leave it blank ",
+    "setting_childBoxCSS_desp": "If no modification, please leave it blank ",
+    "setting_linkDivider_name": "Document name prefix",
+    "setting_linkDivider_desp": "This prefix would be added before a document link without an icon. When \"popup window trigger range\" set as \"Icon only\", prefix also used to trigger it.",
+    "setting_icon_option_0": "Hide all",
+    "setting_icon_option_1": "Custom only",
+    "setting_icon_option_2": "Show all",
+    "setting_popupWindow_option_0": "Do not set trigger",
+    "setting_popupWindow_option_1": "Icon only",
+    "setting_popupWindow_option_2": "Icon and link text",
 }
 let language = zh_CN;
+
+/**
+ * 由需要的设置项生成设置页面
+ * @param {*} settingObject 
+ */
+function generateSettingPanelHTML(settingObjectArray) {
+    let resultHTML = "";
+    for (let oneSettingProperty of settingObjectArray) {
+        let inputElemStr = "";
+        oneSettingProperty.desp = oneSettingProperty.desp?.replace(new RegExp("<code>", "g"), "<code class='fn__code'>");
+        let temp = `
+        <label class="fn__flex b3-label">
+            <div class="fn__flex-1">
+                ${oneSettingProperty.name}
+                <div class="b3-label__text">${oneSettingProperty.desp??""}</div>
+            </div>
+            <span class="fn__space"></span>
+            *#*##*#*
+        </label>
+        `;
+        switch (oneSettingProperty.type) {
+            case "NUMBER": {
+                let min = oneSettingProperty.limit[0];
+                let max = oneSettingProperty.limit[1];
+                inputElemStr = `<input 
+                    class="b3-text-field fn__flex-center fn__size200" 
+                    id="${oneSettingProperty.id}" 
+                    type="number" 
+                    name="${oneSettingProperty.simpId}"
+                    ${min == null || min == undefined ? "":"min=\"" + min + "\""} 
+                    ${max == null || max == undefined ? "":"max=\"" + max + "\""} 
+                    value="${oneSettingProperty.value}">`;
+                break;
+            }
+            case "SELECT": {
+
+                let optionStr = "";
+                for (let option of oneSettingProperty.limit) {
+                    let optionName = option.name;
+                    if (!optionName) {
+                        optionName = language[`setting_${oneSettingProperty.simpId}_option_${option.value}`];
+                    }
+                    optionStr += `<option value="${option.value}" 
+                    ${option.value == oneSettingProperty.value ? "selected":""}>
+                        ${optionName}
+                    </option>`;
+                }
+                inputElemStr = `<select 
+                    id="${oneSettingProperty.id}" 
+                    name="${oneSettingProperty.simpId}"
+                    class="b3-select fn__flex-center fn__size200">
+                        ${optionStr}
+                    </select>`;
+                break;
+            }
+            case "TEXT": {
+                inputElemStr = `<input class="b3-text-field fn__flex-center fn__size200" id="${oneSettingProperty.id}" name="${oneSettingProperty.simpId}" value="${oneSettingProperty.value}"></input>`;
+                temp = `
+                <label class="fn__flex b3-label config__item">
+                    <div class="fn__flex-1">
+                        ${oneSettingProperty.name}
+                        <div class="b3-label__text">${oneSettingProperty.desp??""}</div>
+                    </div>
+                    *#*##*#*
+                </label>`
+                break;
+            }
+            case "SWITCH": {
+                inputElemStr = `<input 
+                class="b3-switch fn__flex-center"
+                name="${oneSettingProperty.simpId}"
+                id="${oneSettingProperty.id}" type="checkbox" 
+                ${oneSettingProperty.value?"checked=\"\"":""}></input>
+                `;
+                break;
+            }
+            case "TEXTAREA": {
+                inputElemStr = `<textarea 
+                name="${oneSettingProperty.simpId}"
+                class="b3-text-field fn__block" 
+                id="${oneSettingProperty.id}">${oneSettingProperty.value}</textarea>`;
+                temp = `
+                <label class="b3-label fn__flex">
+                    <div class="fn__flex-1">
+                        ${oneSettingProperty.name}
+                        <div class="b3-label__text">${oneSettingProperty.desp??""}</div>
+                        <div class="fn__hr"></div>
+                        *#*##*#*
+                    </div>
+                </label>`
+                break;
+            }
+        }
+        
+        resultHTML += temp.replace("*#*##*#*", inputElemStr);
+    }
+    // console.log(resultHTML);
+    return resultHTML;
+}
+
+/**
+ * 由配置文件读取配置
+ */
+function loadCacheSettings() {
+    // 检索当前页面所有设置项元素
+
+}
+
+/**
+ * 由设置界面读取配置
+ */
+function loadUISettings(formElement) {
+    let data = new FormData(formElement);
+    // 扫描标准元素 input[]
+    let result = {};
+    for(const [key, value] of data.entries()) {
+        // console.log(key, value);
+        result[key] = value;
+        if (value === "on") {
+            result[key] = true;
+        }else if (value === "null" || value == "false") {
+            result[key] = "";
+        }
+    }
+    let checkboxes = formElement.querySelectorAll('input[type="checkbox"]');
+    for (let i = 0; i < checkboxes.length; i++) {
+        let checkbox = checkboxes[i];
+        // console.log(checkbox, checkbox.name, data[checkbox.name], checkbox.name);
+        if (result[checkbox.name] == undefined) {
+            result[checkbox.name] = false;
+        }
+    }
+
+    let numbers = formElement.querySelectorAll("input[type='number']");
+    // console.log(numbers);
+    for (let number of numbers) {
+        result[number.name] = parseFloat(number.value);
+    }
+
+    console.log("UI SETTING", result);
+    return result;
+}
