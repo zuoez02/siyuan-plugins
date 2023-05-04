@@ -6,7 +6,7 @@
 
 本插件比较适合笔记本比较多的人，用于快速在不同笔记本创建今日的笔记，并将块在不同笔记中移动。
 
-![日记选项](https://img-bed-1255650068.cos.ap-chengdu.myqcloud.com/inbox/DailyNoteToday.webp)
+![日记选项](https://gitcode.net/frostime/siyuan-plugin-daily-note/-/raw/master/asset/%E6%97%A5%E8%AE%B0%E9%80%89%E9%A1%B9.png)
 
 ## 功能介绍
 
@@ -14,8 +14,8 @@
     - 自动打开当前排位第一的笔记本中今天的笔记，如果不存在则自动创建并打开
     - 忽略「思源笔记用户指南」
 
-2. 右上角提供下拉选项，快速创建/打开今天的笔记
-    - 下拉框中按照笔记本顺序排列，列出所有的笔记本
+2. 右上角提供下拉选项/菜单，快速创建/打开今天的笔记
+    - 下拉框中按照笔记本顺序排列（见[FAQ](#q-笔记本的排序是如何确定的可以调整吗)），列出所有的笔记本
     - 「思源笔记用户指南」
     - 点击笔记本，自动打开/创建今日的笔记
 
@@ -29,22 +29,23 @@
 5. 设置面板
     - 可以在设置面板中选择，是否要在开启插件的时候自动打开今天的笔记
     - 设置插件内笔记本排序方案
+    - 选择使用下拉框 or 菜单图标
     - 提供「更新」按钮，功能同「Ctrl + alt + u」快捷键
     - 多语言支持
 
-    ![Setting](https://img-bed-1255650068.cos.ap-chengdu.myqcloud.com/SiYuan/Setting.webp)
+    ![](https://gitcode.net/frostime/siyuan-plugin-daily-note/-/raw/master/asset/Setting.png)
 
 6. 移动块
     - 选中块，「Alt+右键」，可以调处一个移动块的面板
     - 选择笔记本，可以把当前块移动到对应笔记本今天的日记下
 
-    ![](https://img-bed-1255650068.cos.ap-chengdu.myqcloud.com/SiYuan/MoveBlock.webp)
+    ![](https://gitcode.net/frostime/siyuan-plugin-daily-note/-/raw/master/asset/MoveBlock.png)
 
 ## 常见问题
 
 ### Q: 插件的使用有什么限制吗？
 
-本插件由于将界面注册在顶端工具栏内，所以部分主题下可能无法正常使用。目前确认无法在 Rem Craft 下使用。
+下拉框模式在部分主题，如 Rem Craft 下无法使用，需要改成菜单模式。
 
 ### Q: 我不想每次打开笔记的时候就创建日记。
 
