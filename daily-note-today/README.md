@@ -1,3 +1,14 @@
+## [2023-05-08] 插件公告
+
+官方插件系统将在 2.9.0 版本完成整合，第三方插件系统也即将完成它的历史使命。
+
+本插件后续将迁移到官方插件系统，作为 v1.0.0 正式版本发布；而留在第三方插件系统内的副本将维持在 v0.7.0 版本不再更新。项目地址也迁移到：https://github.com/frostime/siyuan-dailynote-today。
+
+感谢 [@zuoez02](https://github.com/zuoez02) 先生为思源社区做出的重要贡献，他的第三方插件系统的横空出世直接改变了思源的发展方向，让本来已经放弃内置插件系统的官方直接更改原定的开发计划，着手植入插件系统——这也将为思源的发展带来巨大的可能。
+
+作为早期响应第三方插件工程的一个卑微思源用户，向 [@zuoez02](https://github.com/zuoez02) 先生对思源社区的重要贡献致以崇高的敬意。
+
+
 # 今日笔记
 
 - [English README](https://github.com/frostime/siyuan-plugin-open-diary/blob/master/README-en.md)
